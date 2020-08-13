@@ -30,5 +30,11 @@ class Hll312():
 	# TODO: implement merge method
 	def merge(self, other:Hll312):
 
+	# Private hashing function
+	# input: string of arbitrary length
+	# hash_size: the length of the hashed output
+	# return: an 1-dimensional array of m boolean elements
+	def __hash(input:string, hash_size:int) -> ndarray:
+
 if __name__ == '__main__':
 	# TODO: add main method testing and plotting
