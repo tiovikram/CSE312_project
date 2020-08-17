@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import mmh3
 
 # HyperLogLog 
-class Hll312():
+class Hll312:
 	# TODO: Add default m value and filename
 	def __init__(self, hash_size:int, m:int, filename:str):	
 		self.m = m
@@ -50,7 +50,7 @@ class Hll312():
 
 	# TODO: implement merge method
 	def merge(self, other):
-		if (shape(self.table))[1] == (shape(other.self.table))[1]:
+		if (shape(self.table))[1] == (shape(other.table))[1]:
 			for i in range(0, (shape(self.table))[1]):
 				if (other.table[i] > self.table[i]):
 					self.table[i] = other.table[i] 
