@@ -58,36 +58,35 @@ class Hll312:
 
 if __name__ == '__main__':
 	print("Generating data set")
-	test = np.genfromtxt('stream_small.txt', delimiter='\n', dtype=str)
+	test = np.genfromtxt('hamlet.txt', delimiter='\n', dtype=str)
 	control = set([])
 
 	# Initialise numpy arrays
-	control_res = np.zeros(15)
-	exp_res = np.zeros(15)
-	indp = np.arange(15)
-	indp += 1
+	control_res = np.zeros(13)
+	exp_res = np.zeros(13)
+	indp = np.arange(2, 15)
 
 	# Control results
 	for j in range (0, test.shape[0]):
 		control.add(test[j])
 
 	# HLL results
-	for i in range (1, 15):
+	for i in range (2, 15):
 		testhll = Hll312(m=i)
 		for j in range (0, test.shape[0]):
 			testhll.add(test[j])
-		exp_res[i] = testhll.count()
-		control_res[i] = len(control)
+		exp_res[i - 2] = testhll.count()
+		control_res[i - 2] = len(control)
 
 	# Plot lines
 	plt.plot(indp, exp_res, "r", label="HLL", linestyle="-")
 	plt.plot(indp, control_res, "black", label="Control", linestyle="-.")
 	
 	# Format plot
-	plt.title("CSE 312 stream_small test results")
+	plt.title("CSE 312 hamlet.txt test results")
 	plt.legend(loc="upper left")
 	plt.xlabel("m")
 	plt.ylabel("Distinct elements")
 
 	# Save plot
-	plt.savefig('test1.png')
+	plt.savefig('test2.png')
