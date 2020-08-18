@@ -26,7 +26,7 @@ class Hll312:
 
 	def add(self, v: str):
 		hashed_data = self.hash(v) 
-		prev_val = self.table[int(np.log2(hashed_data//(2**self.m) + 1)) - 1]
+		prev_val = self.table[int(np.log2(hashed_data//(2**self.m) + 1))]
 		if (hashed_data % (2**self.m) > prev_val % (2**self.m)):
 			self.table[int(np.log2(hashed_data//(2**self.m) + 1)) - 1] = (hashed_data % self.m)
 			
@@ -38,11 +38,11 @@ class Hll312:
 
 		harmonic_mean = harmonic_mean**(-1)
 
-		if (self.m#16 <= 1):
+		if (self.m//16 <= 1):
 			return int(self.constants[0]*(self.m**2)*harmonic_mean)
-		elif (self.m#32 <= 1):
+		elif (self.m//32 <= 1):
 			return int(self.constants[1]*(self.m**2)*harmonic_mean)
-		elif (self.m#64 <= 1):
+		elif (self.m//64 <= 1):
 			return int(self.constants[2]*(self.m**2)*harmonic_mean)
 		else:
 			constant = (0.7213)/(1 + 1.079/self.m)
@@ -69,8 +69,8 @@ if __name__ == '__main__':
 	indp += 1
 
 	# Control results
-	for j in range (0, test1.shape[0]):
-		control.add(test1[j])
+	for j in range (0, test.shape[0]):
+		control.add(test[j])
 
 	# HLL results
 	for i in range (1, 15):
