@@ -18,54 +18,77 @@ import mmh3
 
 # HyperLogLog 
 class Hll312:
-	# TODO: Add default m value and filename
 	def __init__(self, m:int):	
 		self.m = m
 		self.table = np.zeros((int (np.log2(m))))
 		self.constants = np.array([0.673, 0.697, 0.709])
-	
-	# TODO: implement add method
-	def add(self, v: str):
-		hashed_data = hash(v)
-		prev_val = self.table[hashed_data//self.m]
-		if (hashed_data % m > prev_val % m):
-			self.table[hashed_data//self.m] = (hashed_data % m)
-			
-	# TODO: implement count method
-	def count(self) -> int:
-		harmonic_mean = 0.0;
-		for i in range(0, self.table.shape[0]):
-			harmonic_mean = 2**(self.table[i])
+		self.hash_limit = int((2**(np.log2(self.m)+self.m)))
 
-		if (m//16 <= 1):
+	def add(self, v: str):
+		hashed_data = self.hash(v) 
+		prev_val = self.table[int(np.log2(hashed_data//(2**self.m) + 1)) - 1]
+		if (hashed_data % (2**self.m) > prev_val % (2**self.m)):
+			self.table[int(np.log2(hashed_data//(2**self.m) + 1)) - 1] = (hashed_data % self.m)
+			
+	# TODO: fix the count method
+	def count(self) -> int:
+		harmonic_mean = 0.0
+		for i in range(0, self.table.shape[0]):
+			harmonic_mean = 2**(-self.table[i])
+
+		harmonic_mean = harmonic_mean**(-1)
+
+		if (self.m#16 <= 1):
 			return int(self.constants[0]*(self.m**2)*harmonic_mean)
-		elif (m//32 <= 1):
-			return int(self.constants[0]*(self.m**2)*harmonic_mean)
-		elif (m//64 <= 1):
-			return int(self.constants[0]*(self.m**2)*harmonic_mean)
+		elif (self.m#32 <= 1):
+			return int(self.constants[1]*(self.m**2)*harmonic_mean)
+		elif (self.m#64 <= 1):
+			return int(self.constants[2]*(self.m**2)*harmonic_mean)
 		else:
 			constant = (0.7213)/(1 + 1.079/self.m)
 			return int(constant*(self.m**2)*harmonic_mean)
 
-	# TODO: implement merge method
 	def merge(self, other):
 		if (self.table.shape[0]) == (other.table.shape[0]):
 			for i in range(0, (self.table.shape[0])):
 				if (other.table[i] > self.table[i]):
 					self.table[i] = other.table[i] 
 
-	# input: str of arbitrary length
-	# hash_size: the length of the hashed output
 	def hash(self, input:str):
-		print("Hash limits: " + str(int((2**(np.log2(self.m) + self.m)))))
-		return (mmh3.hash(input, signed=False) % int((2**(np.log2(self.m) + self.m))))
+		return ((int(mmh3.hash(str(input), signed=False)))%self.hash_limit)
 
 if __name__ == '__main__':
-	# TODO: add main method testing and plotting
-	tests = np.genfromtxt('stream_small.txt', dtype=str)
-	hll = Hll312(m=16) 
+	print("Generating data set")
+	test = np.genfromtxt('stream_small.txt', delimiter='\n', dtype=str)
+	control = set([])
 
-	for i in range(0, tests.shape[0]):
-		hll.add(v=tests[i])
+	# Initialise numpy arrays
+	control_res = np.zeros(15)
+	exp_res = np.zeros(15)
+	indp = np.arange(15)
+	indp += 1
 
-	print("Total Elements: " + str(hll.count))
+	# Control results
+	for j in range (0, test1.shape[0]):
+		control.add(test1[j])
+
+	# HLL results
+	for i in range (1, 15):
+		testhll = Hll312(m=i)
+		for j in range (0, test.shape[0]):
+			testhll.add(test[j])
+		exp_res[i] = testhll.count()
+		control_res[i] = len(control)
+
+	# Plot lines
+	plt.plot(indp, exp_res, "r", label="HLL", linestyle="-")
+	plt.plot(indp, control_res, "black", label="Control", linestyle="-.")
+	
+	# Format plot
+	plt.title("CSE 312 stream_small test results")
+	plt.legend(loc="upper left")
+	plt.xlabel("m")
+	plt.ylabel("Distinct elements")
+
+	# Save plot
+	plt.savefig('test1.png')
