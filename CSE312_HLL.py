@@ -26,11 +26,10 @@ class Hll312:
 
 	def add(self, v: str):
 		hashed_data = self.hash(v) 
-		prev_val = self.table[int(np.log2(hashed_data//(2**self.m) + 1))]
+		prev_val = self.table[int(np.log2(hashed_data//(2**self.m) + 1)) - 1]
 		if (hashed_data % (2**self.m) > prev_val % (2**self.m)):
-			self.table[int(np.log2(hashed_data//(2**self.m) + 1)) - 1] = (hashed_data % self.m)
+		    	self.table[int(np.log2(hashed_data//(2**self.m) + 1)) - 1] = (hashed_data % self.m)
 			
-	# TODO: fix the count method
 	def count(self) -> int:
 		harmonic_mean = 0.0
 		for i in range(0, self.table.shape[0]):
